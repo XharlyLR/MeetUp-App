@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
 
 function App() {
+  const [meetUps, setMeetUps] = useState([]);
+
+  useEffect(() => {
+    fetchMeetUps();
+  }, []);
+
+  const fetchMeetUps = async () => {
+    try {
+      const response = await fetch('http://localhost:8050/api/meetups');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setMeetUps(data.meetUps);
+    } catch (error) {
+      console.error('Error fetching meetups:', error);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h2 style={{ color: '#2e6c80' }}>Meet Ups:</h2>
+      <ul>
+        {meetUps.map((meetUp, index) => (
+          <li key={index}>{meetUp}</li>
+        ))}
+      </ul>
     </div>
   );
 }
